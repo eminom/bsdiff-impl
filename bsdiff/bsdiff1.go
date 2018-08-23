@@ -25,14 +25,14 @@ func SortOut1(ib []byte) []int {
 	n := len(ib)
 
 	// reference value array.
-	x := make([]int, n+1)
+	x := make([]int, n)
+	// x[n] = -1
 	for i, v := range ib {
 		x[i] = int(v)
 	}
-	x[n] = -1
 
 	// suffix-id(partial) to be sorted.
-	y := make([]int, n+1)
+	y := make([]int, n)
 
 	// buckets
 	bucket := make([]int, fetchBig(n, 256))
@@ -90,6 +90,12 @@ func SortOut1(ib []byte) []int {
 			// if x[lhs] != x[rhs] || x[lhs+h] != x[rhs+h]
 
 			if x[lhs] != x[rhs] || !((lhs+h < n && rhs+h < n && x[lhs+h] == x[rhs+h]) || (lhs+h >= n && rhs+h >= n)) {
+				if x[lhs] == x[rhs] {
+					// TODO: Prove this will never happen
+					if lhs+h >= n && rhs+h >= n {
+						fmt.Printf("lhs = %d, rhs = %d, h = %d\n", lhs, rhs, h)
+					}
+				}
 				y[sa[i]] = p
 				p++
 			} else {

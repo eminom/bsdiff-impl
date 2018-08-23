@@ -16,6 +16,7 @@ func printArray(a []int) {
 
 func main() {
 	instr := "abcbcb111" //
+	fmt.Printf("try <%v>\n", instr)
 	o := bsdiff.SortOutString1(instr)
 	printArray(o)
 	for _, v := range o {
