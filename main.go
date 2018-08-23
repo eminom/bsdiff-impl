@@ -15,11 +15,10 @@ func printArray(a []int) {
 }
 
 func main() {
-	instr := "baaa"
-	o := bsdiff.SortOutString(instr)
+	instr := "abcbcb111" //
+	o := bsdiff.SortOutString1(instr)
 	printArray(o)
 	for _, v := range o {
 		fmt.Printf("%v\n", instr[v:])
 	}
-
 }

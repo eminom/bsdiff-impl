@@ -5,7 +5,7 @@ import (
 	"testing"
 )
 
-func printArray(a []int, t *testing.T) {
+func tprintArray(a []int, t *testing.T) {
 	out := ""
 	for _, v := range a {
 		out += fmt.Sprintf("%v ", v)
@@ -15,7 +15,7 @@ func printArray(a []int, t *testing.T) {
 
 func testBsdiff(str string, t *testing.T) {
 	o := SortOutString(str)
-	printArray(o, t)
+	tprintArray(o, t)
 	for _, v := range o {
 		t.Logf("%v", str[v:])
 	}
