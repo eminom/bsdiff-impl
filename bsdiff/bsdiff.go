@@ -63,5 +63,5 @@ func SortOut(raw []byte) []int {
 	for i := 0; i < 1+length; i++ {
 		p[q[i]] = i
 	}
-	return p
+	return p[1:]
 }

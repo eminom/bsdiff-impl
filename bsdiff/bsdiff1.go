@@ -24,22 +24,34 @@ func SortOut1(ib []byte) []int {
 	// fmt.Printf("test<%v>\n", string(ib))
 	n := len(ib)
 
-	// reference value array.
-	x := make([]int, n)
-	// x[n] = -1
-	for i, v := range ib {
-		x[i] = int(v)
-	}
-
-	// suffix-id(partial) to be sorted.
-	y := make([]int, n)
-
 	// buckets
-	bucket := make([]int, fetchBig(n, 256))
+	var bucket [256]int // 256 different values
 
 	// Fall for the first round
 	for i := 0; i < n; i++ {
-		bucket[x[i]]++
+		bucket[ib[i]]++
+	}
+
+	p := 0
+	for i, v := range bucket {
+		if v != 0 {
+			bucket[i] = p
+			p++
+		}
+	}
+
+	// reference value array.(range 0~n-1(maximum))
+	x := make([]int, n)
+	for i, v := range ib {
+		x[i] = bucket[v]
+	}
+
+	// Must do it again
+	for i := 0; i < len(bucket); i++ {
+		bucket[i] = 0
+	}
+	for i := 0; i < n; i++ {
+		bucket[ib[i]]++
 	}
 	for i := 1; i < len(bucket); i++ {
 		bucket[i] += bucket[i-1]
@@ -49,13 +61,19 @@ func SortOut1(ib []byte) []int {
 	sa := make([]int, n)
 
 	for i := n - 1; i >= 0; i-- {
-		v := x[i]
+		v := ib[i]
 		bucket[v]--
 		sa[bucket[v]] = i
 	}
 
-	for h := 1; h*2 < n; h *= 2 {
-		p := 0
+	// suffix-id(partial) to be sorted.
+	y := make([]int, n)
+
+	// up to n different values, starting with the minimum of 0
+	wv := make([]int, n)
+
+	for h := 1; p < n; h *= 2 {
+		p = 0
 		for i := n - h; i < n; i++ {
 			y[p] = i
 			p++
@@ -67,19 +85,19 @@ func SortOut1(ib []byte) []int {
 			}
 		}
 
-		for i := range bucket {
-			bucket[i] = 0
+		for i := range wv {
+			wv[i] = 0
 		}
 		for i := 0; i < n; i++ {
-			bucket[x[y[i]]]++
+			wv[x[y[i]]]++
 		}
-		for i := 1; i < len(bucket); i++ {
-			bucket[i] += bucket[i-1]
+		for i := 1; i < len(wv); i++ {
+			wv[i] += wv[i-1]
 		}
 		// get the next SA
 		for i := n - 1; i >= 0; i-- {
-			bucket[x[y[i]]]--
-			sa[bucket[x[y[i]]]] = y[i]
+			wv[x[y[i]]]--
+			sa[wv[x[y[i]]]] = y[i]
 		}
 		// use y to evaluate the reference-value array(x)
 		p, y[sa[0]] = 1, 0

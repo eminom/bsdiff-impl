@@ -1,4 +1,5 @@
 // +build ignore
+
 package main
 
 import (
@@ -15,9 +16,10 @@ func printArray(a []int) {
 }
 
 func main() {
-	instr := "abcbcb111" //
+	instr := "aac" //
+	// instr := "banana" //
 	fmt.Printf("try <%v>\n", instr)
-	o := bsdiff.SortOutString1(instr)
+	o := bsdiff.SortOutString0(instr)
 	printArray(o)
 	for _, v := range o {
 		fmt.Printf("%v\n", instr[v:])
