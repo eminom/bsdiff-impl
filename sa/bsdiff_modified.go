@@ -1,14 +1,16 @@
-package bsdiff
+package sa
 
-func SortOutString0(a string) []int {
-	return SortOut0([]byte(a))
+type ModifiedSort struct{}
+
+func (m *ModifiedSort) SortString(a string) []int {
+	return m.Sort([]byte(a))
 }
 
-func SortOut0(raw []byte) []int {
-	n := len(raw)
+func (*ModifiedSort) Sort(ib []byte) []int {
+	n := len(ib)
 	x := make([]int, n)
 	var bucket [256]int
-	for _, v := range raw {
+	for _, v := range ib {
 		bucket[v]++
 	}
 	k := 0
@@ -18,7 +20,7 @@ func SortOut0(raw []byte) []int {
 			k++
 		}
 	}
-	for i, v := range raw {
+	for i, v := range ib {
 		x[i] = bucket[v]
 	}
 	y := make([]int, n)

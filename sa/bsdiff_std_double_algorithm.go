@@ -1,26 +1,13 @@
-package bsdiff
+package sa
 
-import (
-	"fmt"
-)
-
-var (
-	_ = fmt.Sprintf
-)
+type StdDoubleAlgo struct{}
 
 // These two interfaces are not compatible at all.
-func SortOutString1(a string) []int {
-	return SortOut1([]byte(a))
+func (d *StdDoubleAlgo) SortString(a string) []int {
+	return d.Sort([]byte(a))
 }
 
-func fetchBig(a, b int) int {
-	if a < b {
-		return b
-	}
-	return a
-}
-
-func SortOut1(ib []byte) []int {
+func (*StdDoubleAlgo) Sort(ib []byte) []int {
 	// fmt.Printf("test<%v>\n", string(ib))
 	n := len(ib)
 
@@ -32,6 +19,7 @@ func SortOut1(ib []byte) []int {
 		bucket[ib[i]]++
 	}
 
+	// reference value, starting from 0
 	p := 0
 	for i, v := range bucket {
 		if v != 0 {
@@ -107,13 +95,9 @@ func SortOut1(ib []byte) []int {
 			// try this: abcbcb111(will crash this line)
 			// if x[lhs] != x[rhs] || x[lhs+h] != x[rhs+h]
 
-			if x[lhs] != x[rhs] || !((lhs+h < n && rhs+h < n && x[lhs+h] == x[rhs+h]) || (lhs+h >= n && rhs+h >= n)) {
-				if x[lhs] == x[rhs] {
-					// TODO: Prove this will never happen
-					if lhs+h >= n && rhs+h >= n {
-						fmt.Printf("lhs = %d, rhs = %d, h = %d\n", lhs, rhs, h)
-					}
-				}
+			// lhs and rhs can not be >= n for the same time
+			// For one: lhs+h >= n && rhs+h >= n will never happen
+			if x[lhs] != x[rhs] || (lhs+h < n) != (rhs+h < n) || x[lhs+h] != x[rhs+h] {
 				y[sa[i]] = p
 				p++
 			} else {

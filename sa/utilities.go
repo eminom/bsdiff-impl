@@ -1,4 +1,4 @@
-package bsdiff
+package sa
 
 import (
 	"fmt"

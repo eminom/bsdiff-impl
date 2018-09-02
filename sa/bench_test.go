@@ -1,4 +1,4 @@
-package bsdiff
+package sa
 
 import (
 	"crypto/rand"
@@ -27,18 +27,20 @@ func initInput() {
 }
 
 func BenchmarkBsdiffUno(b *testing.B) {
+	a := new(StdDoubleAlgo)
 	for i := 0; i < b.N; i++ {
 		for _, v := range inputStream {
-			SortOut1(v)
+			a.Sort(v)
 		}
 	}
 
 }
 
 func BenchmarkBsdiffCero(b *testing.B) {
+	a := new(ModifiedSort)
 	for i := 0; i < b.N; i++ {
 		for _, v := range inputStream {
-			SortOut0(v)
+			a.Sort(v)
 		}
 	}
 }

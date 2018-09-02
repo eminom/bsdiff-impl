@@ -1,4 +1,4 @@
-package bsdiff
+package sa
 
 import (
 	"bytes"
@@ -15,31 +15,31 @@ func init() {
 func randString(n int) string {
 	rv := ""
 	for i := 0; i < n; i++ {
-		rv += string(mrand.Intn(3) + 'a')
+		rv += string(mrand.Intn(2) + 'a')
 	}
 	return rv
 }
 
 func TestBsdiffBasic(t *testing.T) {
-	testBsdiffX(SortOut, 1000, t)
-	testBinaries(SortOut, 100, t)
+	testBsdiffX(new(RawSort), 1000, t)
+	testBinaries(new(RawSort), 100, t)
 }
 
 func TestBsdiffCero(t *testing.T) {
-	testBsdiffX(SortOut0, 1000, t)
-	testBinaries(SortOut0, 100, t)
+	testBsdiffX(new(ModifiedSort), 1000, t)
+	testBinaries(new(ModifiedSort), 100, t)
 }
 
 func TestBsdiffUno(t *testing.T) {
-	testBsdiffX(SortOut1, 1000, t)
-	testBinaries(SortOut1, 100, t)
+	testBsdiffX(new(StdDoubleAlgo), 1000, t)
+	testBinaries(new(StdDoubleAlgo), 100, t)
 }
 
-func testBsdiffX(testFunc func([]byte) []int, kRun int, t *testing.T) {
+func testBsdiffX(sa SASort, kRun int, t *testing.T) {
 	for i := 0; i < 16*1024; i = i*2 + 1 {
 		for k := 0; k < kRun; k++ {
 			buff := []byte(randString((i + k)))
-			v := testFunc(buff)
+			v := sa.Sort(buff)
 			for j := 1; j < len(v); j++ {
 				if -1 != bytes.Compare(buff[v[j-1]:], buff[v[j]:]) {
 					t.Logf("Test on <%v> failed", string(buff))
@@ -53,15 +53,15 @@ func testBsdiffX(testFunc func([]byte) []int, kRun int, t *testing.T) {
 	}
 }
 
-func testBinaries(testFunc func([]byte) []int, kRun int, t *testing.T) {
+func testBinaries(sa SASort, kRun int, t *testing.T) {
 	var buff [1024 * 16]byte
 	for i := 0; i < 1000; i++ {
 		l := mrand.Intn(1024 * 16)
 		m, _ := rand.Read(buff[:l])
-		v := testFunc(buff[:m])
+		v := sa.Sort(buff[:m])
 		for j := 1; j < len(v); j++ {
 			if -1 != bytes.Compare(buff[v[j-1]:m], buff[v[j]:m]) {
-				t.Fatalf("failed for %p", testFunc)
+				t.Fatalf("failed for %v", sa)
 			}
 		}
 	}
