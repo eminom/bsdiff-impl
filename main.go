@@ -5,7 +5,7 @@ package main
 import (
 	"fmt"
 
-	"./bsdiff"
+	"./sa"
 )
 
 func printArray(a []int) {
@@ -18,8 +18,9 @@ func printArray(a []int) {
 func main() {
 	instr := "aac" //
 	// instr := "banana" //
+	var a = new(sa.RawSort)
 	fmt.Printf("try <%v>\n", instr)
-	o := bsdiff.SortOutString0(instr)
+	o := a.SortString(instr)
 	printArray(o)
 	for _, v := range o {
 		fmt.Printf("%v\n", instr[v:])

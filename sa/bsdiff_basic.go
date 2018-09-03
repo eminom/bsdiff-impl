@@ -38,8 +38,12 @@ func (*RawSort) Sort(raw []byte) []int {
 		q[i] = bucket[v]
 	}
 	// printArray(q)
+
 	nq := make([][2]int, 1+n)
 	for h := 1; h < n; h *= 2 {
+		// generate the 'next' q(reference value array)
+		// with two parts:
+		// the higher h and the lower h:
 		for i := 0; i < 1+n; i++ {
 			nq[i][0] = q[i]
 			if i+h > n {
@@ -55,6 +59,7 @@ func (*RawSort) Sort(raw []byte) []int {
 		for i := 0; i < 1+n; i++ {
 			radix[nq[i][1]] = append(radix[nq[i][1]], i)
 		}
+
 		// Sort the higher part.
 		radix2 := make([][]int, 1+n)
 		for _, vr := range radix {
@@ -62,6 +67,7 @@ func (*RawSort) Sort(raw []byte) []int {
 				radix2[nq[v][0]] = append(radix2[nq[v][0]], v)
 			}
 		}
+
 		var prev int
 		// the previous index (suffix-id)
 		// update the refrence value for array q
@@ -69,7 +75,7 @@ func (*RawSort) Sort(raw []byte) []int {
 		for _, vr := range radix2 {
 			prev = -1
 			for _, v := range vr {
-				if prev < 0 || nq[prev][0] != nq[v][0] {
+				if prev < 0 || nq[prev][1] != nq[v][1] {
 					nk++
 				}
 				q[v] = nk - 1
